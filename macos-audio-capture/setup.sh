@@ -72,17 +72,22 @@ WHY
 
   Homebrew is not installed on this Mac.
 
-  Why Homebrew is useful here:
-    It installs and, more importantly, cleanly UNINSTALLS BlackHole with a
-    single command, which is what makes this setup reversible. Without it you
-    would install BlackHole from a .pkg and remove it by hand-deleting files
-    from /Library/Audio/Plug-Ins/HAL/.
+  You do NOT need it. Either option below works; pick on other grounds.
 
-  Your options:
-    1. Install Homebrew yourself:  https://brew.sh   (then re-run this script)
-    2. Install BlackHole directly from the signed installer:
+    1. Install BlackHole directly from the signed installer  [simplest]
          https://github.com/ExistentialAudio/BlackHole/releases
-       Download BlackHole2ch.vX.X.X.pkg, open it, then re-run this script.
+       Download the latest BlackHole2ch-X.X.X.pkg, open it, then re-run this
+       script. Uninstalling later is one command, because BlackHole is a
+       single bundle in a single directory:
+         sudo rm -rf /Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver
+
+    2. Install Homebrew first (https://brew.sh), then re-run this script.
+       Worth it only if you want Homebrew anyway. It is a large install
+       (it pulls in Xcode Command Line Tools) for one small driver. What it
+       buys here: 'brew uninstall --cask blackhole-2ch' instead of the rm
+       above, and the optional switchaudio-osx helper that lets these
+       scripts set the default devices for you instead of you clicking
+       through System Settings.
 
   This script will NOT install Homebrew for you without you asking.
 
@@ -96,10 +101,15 @@ NOBREW
   else
     say_bad "Driver not found after install. Stopping."; exit 1
   fi
+fi
 
-  if ! device_exists "$BLACKHOLE_NAME"; then
-    say_warn "Core Audio has not picked up the new driver yet."
-    cat <<'CAD'
+# The driver is on disk. Core Audio only loads HAL plug-ins when its daemon
+# starts, so a freshly installed driver may not be enumerated yet. This applies
+# equally to a .pkg install done outside this script, so it lives out here
+# rather than inside the install branch above.
+if ! device_exists "$BLACKHOLE_NAME"; then
+  say_warn "Core Audio has not picked up the driver yet."
+  cat <<'CAD'
 
   Core Audio loads HAL plug-ins when its daemon starts. To make BlackHole
   appear without rebooting, the daemon must be restarted:
@@ -112,12 +122,11 @@ NOBREW
   destructive and changes no settings. Rebooting achieves the same thing.
 
 CAD
-    if confirm "Restart coreaudiod now?"; then
-      sudo killall coreaudiod || say_warn "killall returned non-zero (daemon may have already restarted)."
-      sleep 3
-    else
-      say_warn "Skipped. Reboot before continuing, then re-run this script."; exit 0
-    fi
+  if confirm "Restart coreaudiod now?"; then
+    sudo killall coreaudiod || say_warn "killall returned non-zero (daemon may have already restarted)."
+    sleep 3
+  else
+    say_warn "Skipped. Reboot before continuing, then re-run this script."; exit 0
   fi
 fi
 

@@ -44,9 +44,11 @@ cd macos-audio-capture
 
 ## What gets changed
 
-1. **BlackHole 2ch installed** (`brew install --cask blackhole-2ch`) — a Core Audio
-   HAL plug-in at `/Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver`. Not a kernel
-   extension. No SIP change, no security setting touched.
+1. **BlackHole 2ch installed** — a Core Audio HAL plug-in at
+   `/Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver`. Not a kernel extension.
+   No SIP change, no security setting touched. Either via
+   `brew install --cask blackhole-2ch`, or the signed `.pkg` from
+   [the releases page](https://github.com/ExistentialAudio/BlackHole/releases).
 2. **A Multi-Output Device named `Voice Memos Audio Capture`** — created by you in
    Audio MIDI Setup (see below), containing your physical output + BlackHole 2ch.
 3. **Default output** → `Voice Memos Audio Capture`.
@@ -56,6 +58,16 @@ cd macos-audio-capture
 
 Optionally `switchaudio-osx` (to set defaults from the CLI) and `ffmpeg` (for the
 objective level test). Both optional; both plain Homebrew formulas.
+
+**Homebrew is not required.** If you don't have it, install BlackHole from the
+`.pkg` and skip the helpers — you'll set the output and input in System Settings
+by hand (two clicks each way) instead of the scripts doing it. Uninstalling
+without Homebrew is one command, since BlackHole is a single bundle in a single
+directory:
+
+```bash
+sudo rm -rf /Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver && sudo killall coreaudiod
+```
 
 Nothing else is modified. **Existing aggregate and multi-output devices are never
 touched** — `rollback.sh` refuses to delete any device without a marker file
