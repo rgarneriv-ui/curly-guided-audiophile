@@ -72,22 +72,24 @@ WHY
 
   Homebrew is not installed on this Mac.
 
-  You do NOT need it. Either option below works; pick on other grounds.
+  BlackHole ships through exactly two channels (per its own README). Note
+  that its GitHub *releases* page carries source code only - there is no
+  .pkg to download there.
 
-    1. Install BlackHole directly from the signed installer  [simplest]
-         https://github.com/ExistentialAudio/BlackHole/releases
-       Download the latest BlackHole2ch-X.X.X.pkg, open it, then re-run this
-       script. Uninstalling later is one command, because BlackHole is a
-       single bundle in a single directory:
-         sudo rm -rf /Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver
+    1. Install Homebrew (https://brew.sh), then re-run this script.  [advised]
+       Large install - it pulls in Xcode Command Line Tools - but it is the
+       only fully scriptable route, and it also enables switchaudio-osx, so
+       these scripts can set and restore your default devices instead of you
+       clicking through System Settings each time.
 
-    2. Install Homebrew first (https://brew.sh), then re-run this script.
-       Worth it only if you want Homebrew anyway. It is a large install
-       (it pulls in Xcode Command Line Tools) for one small driver. What it
-       buys here: 'brew uninstall --cask blackhole-2ch' instead of the rm
-       above, and the optional switchaudio-osx helper that lets these
-       scripts set the default devices for you instead of you clicking
-       through System Settings.
+    2. Download the installer from  https://existential.audio/blackhole
+       The vendor's page asks for a name and email before it gives you the
+       .pkg. Install it, then re-run this script.
+
+  Either way, uninstalling is one command, because BlackHole is a single
+  bundle in a single directory:
+      sudo rm -R /Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver
+      sudo killall -9 coreaudiod
 
   This script will NOT install Homebrew for you without you asking.
 

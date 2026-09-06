@@ -47,8 +47,12 @@ cd macos-audio-capture
 1. **BlackHole 2ch installed** — a Core Audio HAL plug-in at
    `/Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver`. Not a kernel extension.
    No SIP change, no security setting touched. Either via
-   `brew install --cask blackhole-2ch`, or the signed `.pkg` from
-   [the releases page](https://github.com/ExistentialAudio/BlackHole/releases).
+   `brew install --cask blackhole-2ch`, or the installer from
+   [existential.audio/blackhole](https://existential.audio/blackhole) (the
+   vendor page asks for a name and email first).
+
+   > **Not on GitHub releases.** BlackHole's releases page publishes source
+   > code only — there is no `.pkg` asset there. Use one of the two routes above.
 2. **A Multi-Output Device named `Voice Memos Audio Capture`** — created by you in
    Audio MIDI Setup (see below), containing your physical output + BlackHole 2ch.
 3. **Default output** → `Voice Memos Audio Capture`.
@@ -59,14 +63,18 @@ cd macos-audio-capture
 Optionally `switchaudio-osx` (to set defaults from the CLI) and `ffmpeg` (for the
 objective level test). Both optional; both plain Homebrew formulas.
 
-**Homebrew is not required.** If you don't have it, install BlackHole from the
-`.pkg` and skip the helpers — you'll set the output and input in System Settings
-by hand (two clicks each way) instead of the scripts doing it. Uninstalling
-without Homebrew is one command, since BlackHole is a single bundle in a single
-directory:
+**Homebrew is not required**, but it is the smoother route: it's the only
+scriptable way to install BlackHole, and it enables `switchaudio-osx` so the
+scripts can set and restore your default devices instead of you clicking through
+System Settings each time. Without it, use the vendor installer and do those two
+clicks by hand.
+
+Uninstalling is one command either way, since BlackHole is a single bundle in a
+single directory (this is the project's own documented manual uninstall):
 
 ```bash
-sudo rm -rf /Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver && sudo killall coreaudiod
+sudo rm -R /Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver
+sudo killall -9 coreaudiod
 ```
 
 Nothing else is modified. **Existing aggregate and multi-output devices are never
